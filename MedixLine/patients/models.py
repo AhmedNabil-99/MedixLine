@@ -1,10 +1,13 @@
 from django.db import models
+from django.contrib.auth.models import User
+
 
 # Create your models here.
 class Patient(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
-    dob = models.DateField()
+    date_of_birth = models.DateField()
     gender = models.CharField(max_length=10)
     phone_number = models.CharField(max_length=15)
     email = models.EmailField()
