@@ -37,15 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-<<<<<<< HEAD
     'patients.apps.PatientsConfig',
-    'rest_framework'
-=======
     'doctors.apps.DoctorsConfig',
     'rest_framework',
     'rest_framework.authtoken',
     'authentication',   
->>>>>>> 7f7c0be68e0415f216fd3dea2a08d9936b15f1f2
 ]
 
 AUTH_USER_MODEL = 'authentication.User'
