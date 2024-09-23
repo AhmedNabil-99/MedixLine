@@ -1,11 +1,27 @@
 from rest_framework import serializers
 from .models import Doctor, Specialization
+from authentication.models import User
+from authentication.serializers import UserSerializer
 
 
-class DoctorSerializer(serializers.ModelSerializer):
+class DoctorSerializerSet(serializers.ModelSerializer):
+    user = UserSerializer()
     class Meta:
         model = Doctor
         fields = '__all__'
+
+class DoctorSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+
+    class Meta:
+        model = Doctor
+        fields = '__all__'
+
+    def create(self, validated_data):
+        user_data = validated_data.pop('user')
+        user = User.objects.create_user(**user_data)
+        doctor = Doctor.objects.create(user=user, **validated_data)
+        return doctor
 
 class SpecializationSerializer(serializers.ModelSerializer):
     class Meta:

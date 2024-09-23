@@ -22,6 +22,12 @@ from authentication.views import UserLoginView, UserLogoutView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+<<<<<<< HEAD
     path('api/patient/', include('patients.urls')),
+=======
+    path('api/doctor/', include('doctors.urls')),
+>>>>>>> a8b01599fce045bc6800f33d85f800013220d66f
     path('api/auth/', include('authentication.urls')),
+    # path('api/specialization', include('authentication.urls')),
+
     ]
