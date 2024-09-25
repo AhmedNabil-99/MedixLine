@@ -24,5 +24,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/patient/', include('patients.urls')),
     path('api/doctor/', include('doctors.urls')),
-    path('api/auth/', include('authentication.urls'))
+    path('api/auth/', include('authentication.urls')),
+    path('api/appointment/', include('appointments.urls')),
+    path('api/specialization', include('doctors.urls')),
     ]
