@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'authentication',   
+    'appointments',
 ]
 
 AUTH_USER_MODEL = 'authentication.User'

@@ -25,3 +25,6 @@ class Patient(models.Model):
     email = models.EmailField()
     address = models.TextField()
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="patient_account")
+
+    def __str__(self):
+        return f"{self.user.username}"
