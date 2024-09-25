@@ -8,8 +8,6 @@ router.register('specializations', views.SpecializationViewSet, basename = 'spec
 router.register('', views.DoctorViewSet, basename= 'doctors')
 
 
-
-
 urlpatterns = [
     path('register/', DoctorRegistrationView.as_view(), name='doctor-registration'),
 ]
