@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'authentication',
     'corsheaders',   
+    'appointments',
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
@@ -122,7 +123,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Africa/Cairo'
+
 
 USE_I18N = True
 
