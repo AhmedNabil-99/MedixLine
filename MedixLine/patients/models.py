@@ -12,12 +12,12 @@ class Patient(models.Model):
         ('other', 'Other'),
     ]  
     phone_number_validator = RegexValidator(
-        regex=r'^\d{10}$',
-        message="Phone number must be exactly 10 digits."
+        regex=r'^(010|011|015|012)\d{8}$',
+        message="Not A Valid Phone Number."
     )
     gender = models.CharField(max_length=10, choices=gender_choices)
     phone_number = models.CharField(
-        max_length=10,
+        max_length=11,
         validators=[phone_number_validator],
         unique=True
     )    
@@ -30,6 +30,6 @@ class Patient(models.Model):
 
     def clean(self):
         super().clean()
-        if self.date_of_birth > timezone.now().date():
+        if self.date_of_birth and self.date_of_birth > timezone.now().date():
             raise ValidationError("Not A Valid Date of Birth")
     
