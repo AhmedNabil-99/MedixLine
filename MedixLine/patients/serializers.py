@@ -20,6 +20,7 @@ class PatientSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user_data = validated_data.pop('user')
+        user_data['role'] = 'patient'
         user = User.objects.create_user(**user_data)
         patient = Patient.objects.create(user=user, **validated_data)
         return patient

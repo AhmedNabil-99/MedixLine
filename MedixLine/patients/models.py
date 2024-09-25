@@ -19,6 +19,8 @@ from authentication.models import User
 
 class Patient(models.Model):
     # other fields related to student ...
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
     date_of_birth = models.DateField()
     gender = models.CharField(max_length=10)
     phone_number = models.CharField(max_length=15)
