@@ -24,19 +24,22 @@ class Doctor(models.Model):
         )        
     profile_picture = models.ImageField(
         upload_to="doctors/images/profile_pic", 
-        null=True, 
+        null=False, 
         validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png'])]
     )
     national_id = models.ImageField(
-        upload_to="doctors/images/national_ids", 
-        null=True, 
+        upload_to="doctors/images/national_ids",
+        null=False, 
         validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png'])]
     )
     syndicate_id = models.ImageField(
         upload_to="doctors/images/syndicate_ids", 
-        null=True, 
+        null=False, 
         validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png'])]
-    )    
+    )
+    is_confirmed = models.BooleanField(
+        default=False
+    )
     specialization = models.ForeignKey(Specialization, on_delete=models.CASCADE, null=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="doctor_account")
 

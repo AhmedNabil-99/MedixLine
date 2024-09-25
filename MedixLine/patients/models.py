@@ -6,8 +6,8 @@ from django.utils import timezone
 
 class Patient(models.Model):
     # other fields related to student ...
-    first_name = models.CharField(max_length=50)
-    last_name = models.CharField(max_length=50)
+    # first_name = models.CharField(max_length=50)
+    # last_name = models.CharField(max_length=50)
     date_of_birth = models.DateField()
     gender_choices = [
         ('male', 'Male'),
