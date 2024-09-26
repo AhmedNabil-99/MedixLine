@@ -13,4 +13,4 @@ class User(AbstractUser):
     )
 
     role = models.CharField(max_length=15, choices=ROLE_CHOICES)
-    is_active = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
