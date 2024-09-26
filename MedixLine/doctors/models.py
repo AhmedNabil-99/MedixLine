@@ -7,10 +7,15 @@ from django.core.exceptions import ValidationError
 
 # Create your models here.
 class Specialization(models.Model):
-    specialization = models.CharField(max_length=255, null=False)
+    title = models.CharField(max_length=255, null=False)
+    description = models.TextField(null=True)
+    image = models.ImageField(
+        upload_to='specialization/images',
+        validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png'])]
+        )
 
     def __str__(self):
-        return self.specialization
+        return self.title
 
 class Doctor(models.Model):
     phone_number_validator = RegexValidator(
