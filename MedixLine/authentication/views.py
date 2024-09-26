@@ -8,6 +8,10 @@ from rest_framework.views import APIView
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
+from patients.serializers import PatientSerializer
+from doctors.serializers import DoctorSerializer, SpecializationSerializer
+from patients.models import Patient
+from doctors.models import Doctor, Specialization
 
 # Create your views here.
 
@@ -33,7 +37,29 @@ class UserLoginView(ObtainAuthToken):
             if created:
                 token.delete()  # Delete the token if it was already created
                 token = Token.objects.create(user=user)
-            return Response({'token': token.key, 'username': user.username, 'role': user.role})
+            if user.role == 'patient':
+                try:
+                    patient = Patient.objects.get(user=user)
+                except Patient.DoesNotExist:
+                    return Response({'message': 'Patient profile not found'}, status=status.HTTP_404_NOT_FOUND)
+
+                return Response({
+                    'token': token.key,
+                    'user': PatientSerializer(patient).data  
+                })
+            elif user.role == 'doctor':
+                try:
+                    doctor = Doctor.objects.get(user=user)
+                    # specialization = Specialization.objects.get(id=doctor.specialization)
+                except Doctor.DoesNotExist:
+                    return Response({'message': 'Doctor profile not found'}, status=status.HTTP_404_NOT_FOUND)
+
+                return Response({
+                    'token': token.key,
+                    'user': DoctorSerializer(doctor).data
+                    # 'specialization': SpecializationSerializer(specialization).data
+                })
+
         else:
             return Response({'message': 'Invalid username or password'}, status=status.HTTP_401_UNAUTHORIZED)
 
