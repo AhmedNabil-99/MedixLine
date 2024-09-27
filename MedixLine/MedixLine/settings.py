@@ -37,6 +37,7 @@ DEFAULT_FROM_EMAIL = 'an63805@gmail.com'
 # EMAIL_HOST_PASSWORD = ''
 
 
+
 # Application definition
 
 INSTALLED_APPS = [

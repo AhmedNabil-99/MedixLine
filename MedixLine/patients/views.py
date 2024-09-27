@@ -13,7 +13,6 @@ from django.contrib import messages
 from django.core.mail import send_mail
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
-from django.contrib.auth.models import User
 from django.shortcuts import render, redirect 
 from django.urls import reverse
 from authentication.models import User
@@ -42,6 +41,7 @@ def activate(request, uidb64):
     try:
         uid = force_str(urlsafe_base64_decode(uidb64))  
         user = User.objects.get(pk=uid) 
+        print(user) 
         user.is_active = True 
         user.save()
         messages.success(request, 'Account activated successfully! You can now log in.')
