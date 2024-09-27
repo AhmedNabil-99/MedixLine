@@ -34,7 +34,7 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'apikey'
 DEFAULT_FROM_EMAIL = 'an63805@gmail.com'
-EMAIL_HOST_PASSWORD = ''
+# EMAIL_HOST_PASSWORD = ''
 
 
 # Application definition
