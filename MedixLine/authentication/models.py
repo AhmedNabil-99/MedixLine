@@ -11,6 +11,6 @@ class User(AbstractUser):
         ('patient', 'Patient'),
         ('admin', 'Admin'),
     )
-
+    is_active= models.BooleanField(default=False)
+    email = models.EmailField(unique=True)
     role = models.CharField(max_length=15, choices=ROLE_CHOICES)
-    is_active = models.BooleanField(default=True)

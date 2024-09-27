@@ -8,6 +8,7 @@ from rest_framework.views import APIView
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
+from django.contrib import messages
 from patients.serializers import PatientSerializer
 from doctors.serializers import DoctorSerializer, SpecializationSerializer
 from patients.models import Patient
@@ -31,6 +32,7 @@ class UserLoginView(ObtainAuthToken):
         password = request.data.get('password')
 
         user = authenticate(request, username=username, password=password)
+
         if user is not None:
             login(request, user)
             token, created = Token.objects.get_or_create(user=user)

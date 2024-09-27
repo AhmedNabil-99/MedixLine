@@ -5,3 +5,4 @@ psycopg2-binary==2.9.9
 sqlparse==0.5.1
 typing_extensions==4.12.2
 pycountry==24.6.1
+django-cors-headers==4.4.0
