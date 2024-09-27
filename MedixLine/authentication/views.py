@@ -50,14 +50,12 @@ class UserLoginView(ObtainAuthToken):
             elif user.role == 'doctor':
                 try:
                     doctor = Doctor.objects.get(user=user)
-                    # specialization = Specialization.objects.get(id=doctor.specialization)
                 except Doctor.DoesNotExist:
                     return Response({'message': 'Doctor profile not found'}, status=status.HTTP_404_NOT_FOUND)
 
                 return Response({
                     'token': token.key,
                     'user': DoctorSerializer(doctor).data
-                    # 'specialization': SpecializationSerializer(specialization).data
                 })
 
         else:
