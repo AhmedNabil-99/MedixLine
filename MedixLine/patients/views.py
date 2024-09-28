@@ -16,6 +16,8 @@ from django.utils.encoding import force_bytes, force_str
 from django.shortcuts import render, redirect 
 from django.urls import reverse
 from authentication.models import User
+from rest_framework.permissions import IsAuthenticated
+
 
 
 
@@ -55,6 +57,8 @@ def activate(request, uidb64):
 class PatientViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin, viewsets.GenericViewSet):
     queryset = Patient.objects.all()
     serializer_class = PatientSerializer
+    permission_classes = [IsAuthenticated]
+
 
 class PatientRegistrationView(APIView):
     def post(self, request):
