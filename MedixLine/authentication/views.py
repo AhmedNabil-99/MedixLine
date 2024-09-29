@@ -13,17 +13,17 @@ from patients.serializers import PatientSerializer
 from doctors.serializers import DoctorSerializer, SpecializationSerializer
 from patients.models import Patient
 from doctors.models import Doctor, Specialization
+from rest_framework.generics import RetrieveUpdateAPIView
+
 
 # Create your views here.
 
-# class UserRegistrationView(APIView):
-#     def post(self, request):
-#         serializer = UserSerializer(data=request.data)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(serializer.data, status=status.HTTP_201_CREATED)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class UserDetailView(RetrieveUpdateAPIView):
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
 
+    def get_object(self):
+        return self.request.user
 
 
 class UserLoginView(ObtainAuthToken):
