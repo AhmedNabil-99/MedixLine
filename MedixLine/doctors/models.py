@@ -77,7 +77,7 @@ class Doctor(models.Model):
     )
     specialization = models.ForeignKey(Specialization, on_delete=models.CASCADE, null=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="doctor_account")
-    working_days = models.ManyToManyField(WorkingDay, related_name="doctor_working_days")
+    working_days = models.ManyToManyField(WorkingDay, related_name="doctor_working_days", null=True, blank= True)
     start_time = models.TimeField(
         null=True,
         blank=True
