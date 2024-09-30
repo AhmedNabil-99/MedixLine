@@ -13,8 +13,8 @@ from django.utils.encoding import force_bytes, force_str
 from django.urls import reverse
 from django.contrib.auth.models import User
 
-from .models import Doctor, Specialization
-from .serializers import DoctorSerializer, SpecializationSerializer, DoctorSerializerSet
+from .models import Doctor, Specialization, WorkingDay
+from .serializers import DoctorSerializer, SpecializationSerializer, DoctorSerializerSet, WorkingDaySerializer
 from authentication.models import User
 
 
@@ -67,3 +67,7 @@ class DoctorRegistrationView(APIView):
 class SpecializationViewSet(viewsets.ModelViewSet):
     queryset = Specialization.objects.all() 
     serializer_class = SpecializationSerializer
+
+class WorkingDayViewSet(viewsets.ModelViewSet):
+    queryset = WorkingDay.objects.all() 
+    serializer_class = WorkingDaySerializer
