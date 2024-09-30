@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'authentication',
     'corsheaders',   
     'appointments',
+    'chats' ,
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
