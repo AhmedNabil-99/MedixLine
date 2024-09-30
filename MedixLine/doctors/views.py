@@ -22,7 +22,8 @@ from authentication.models import User
 
 def send_activation_email(user, request):
     subject = "Medix Account Activation"
-    uid = urlsafe_base64_encode(force_bytes(user.pk)) 
+    uid = urlsafe_base64_encode(force_bytes(user.user.pk)) 
+    print("uid",uid)
     activation_link = request.build_absolute_uri(reverse('activate-doctor', kwargs={'uidb64': uid}))
     message = f"Hello {user.user.first_name}, please click the link to activate your account: {activation_link}"
 
@@ -45,6 +46,7 @@ def activate(request, uidb64):
         messages.success(request, 'Account activated successfully! You can now log in.')
         return redirect('http://localhost:3000/signin') 
     except User.DoesNotExist:
+        print(request)
         messages.error(request, 'Invalid activation link')
         return redirect('http://localhost:3000/signup')
 
