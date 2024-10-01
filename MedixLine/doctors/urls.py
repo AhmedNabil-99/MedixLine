@@ -11,5 +11,6 @@ router.register('', views.DoctorViewSet, basename= 'doctors')
 urlpatterns = [
     path('register/', DoctorRegistrationView.as_view(), name='doctor-registration'),
     path('activate/<uidb64>/', activate, name='activate-doctor'),
+    path('search/', views.search_doctors, name='search_doctors'),
 ]
 urlpatterns = urlpatterns + router.urls

@@ -16,6 +16,10 @@ from django.contrib.auth.models import User
 from .models import Doctor, Specialization
 from .serializers import DoctorSerializer, SpecializationSerializer, DoctorSerializerSet
 from authentication.models import User
+from django.http import JsonResponse
+from django.db.models import Q
+from django.conf import settings
+
 
 
 # Create your views here.
@@ -69,3 +73,30 @@ class DoctorRegistrationView(APIView):
 class SpecializationViewSet(viewsets.ModelViewSet):
     queryset = Specialization.objects.all() 
     serializer_class = SpecializationSerializer
+
+def search_doctors(request):
+    department_name = request.GET.get('department', '')
+    doctor_name = request.GET.get('doctor', '')
+
+    doctors = Doctor.objects.all()
+
+    if department_name:
+        doctors = doctors.filter(specialization__title__icontains=department_name)
+
+    if doctor_name:
+        doctors = doctors.filter(
+            Q(user__first_name__icontains=doctor_name) | Q(user__last_name__icontains=doctor_name)
+        )
+
+
+    results = doctors.values(
+        'id',
+        'user__first_name',
+        'user__last_name',
+        'profile_picture',
+    )
+
+    for result in results:
+        result['profile_picture'] = request.build_absolute_uri(settings.MEDIA_URL + result['profile_picture'])
+
+    return JsonResponse(list(results), safe=False)
