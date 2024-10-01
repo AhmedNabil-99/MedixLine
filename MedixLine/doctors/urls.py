@@ -5,6 +5,7 @@ from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 router.register('specializations', views.SpecializationViewSet, basename = 'specializations')
+router.register('workingdays', views.WorkingDayViewSet, basename = 'workingdays')
 router.register('', views.DoctorViewSet, basename= 'doctors')
 
 

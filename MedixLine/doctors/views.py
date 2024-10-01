@@ -13,8 +13,8 @@ from django.utils.encoding import force_bytes, force_str
 from django.urls import reverse
 from django.contrib.auth.models import User
 
-from .models import Doctor, Specialization
-from .serializers import DoctorSerializer, SpecializationSerializer, DoctorSerializerSet
+from .models import Doctor, Specialization, WorkingDay
+from .serializers import DoctorSerializer, SpecializationSerializer, DoctorSerializerSet, WorkingDaySerializer
 from authentication.models import User
 from django.http import JsonResponse
 from django.db.models import Q
@@ -100,3 +100,8 @@ def search_doctors(request):
         result['profile_picture'] = request.build_absolute_uri(settings.MEDIA_URL + result['profile_picture'])
 
     return JsonResponse(list(results), safe=False)
+
+
+class WorkingDayViewSet(viewsets.ModelViewSet):
+    queryset = WorkingDay.objects.all() 
+    serializer_class = WorkingDaySerializer
