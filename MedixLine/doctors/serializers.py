@@ -19,10 +19,15 @@ class DoctorSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user_data = validated_data.pop('user')
+        working_days_data = validated_data.pop('working_days', None)
         user_data['role'] = 'doctor'
         user = User.objects.create_user(**user_data)
         
         doctor = Doctor.objects.create(user=user, **validated_data)
+
+        if working_days_data:
+            doctor.working_days.set(working_days_data)
+            
         return doctor
 
 class SpecializationSerializer(serializers.ModelSerializer):
