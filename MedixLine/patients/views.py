@@ -25,7 +25,8 @@ from rest_framework.permissions import IsAuthenticated
 
 def send_activation_email(user, request):
     subject = "Medix Account Activation"
-    uid = urlsafe_base64_encode(force_bytes(user.pk)) 
+    uid = urlsafe_base64_encode(force_bytes(user.user.pk)) 
+    print("act_mail",uid)
     activation_link = request.build_absolute_uri(reverse('activate-patient', kwargs={'uidb64': uid}))
     message = f"Hello {user.user.first_name}, please click the link to activate your account: {activation_link}"
 
@@ -43,7 +44,6 @@ def activate(request, uidb64):
     try:
         uid = force_str(urlsafe_base64_decode(uidb64))  
         user = User.objects.get(pk=uid) 
-        print(user) 
         user.is_active = True 
         user.save()
         messages.success(request, 'Account activated successfully! You can now log in.')

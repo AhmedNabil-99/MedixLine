@@ -13,16 +13,21 @@ from django.utils.encoding import force_bytes, force_str
 from django.urls import reverse
 from django.contrib.auth.models import User
 
-from .models import Doctor, Specialization
-from .serializers import DoctorSerializer, SpecializationSerializer, DoctorSerializerSet
+from .models import Doctor, Specialization, WorkingDay
+from .serializers import DoctorSerializer, SpecializationSerializer, DoctorSerializerSet, WorkingDaySerializer
 from authentication.models import User
+from django.http import JsonResponse
+from django.db.models import Q
+from django.conf import settings
+
 
 
 # Create your views here.
 
 def send_activation_email(user, request):
     subject = "Medix Account Activation"
-    uid = urlsafe_base64_encode(force_bytes(user.pk)) 
+    uid = urlsafe_base64_encode(force_bytes(user.user.pk)) 
+    print("uid",uid)
     activation_link = request.build_absolute_uri(reverse('activate-doctor', kwargs={'uidb64': uid}))
     message = f"Hello {user.user.first_name}, please click the link to activate your account: {activation_link}"
 
@@ -45,6 +50,7 @@ def activate(request, uidb64):
         messages.success(request, 'Account activated successfully! You can now log in.')
         return redirect('http://localhost:3000/signin') 
     except User.DoesNotExist:
+        print(request)
         messages.error(request, 'Invalid activation link')
         return redirect('http://localhost:3000/signup')
 
@@ -67,3 +73,35 @@ class DoctorRegistrationView(APIView):
 class SpecializationViewSet(viewsets.ModelViewSet):
     queryset = Specialization.objects.all() 
     serializer_class = SpecializationSerializer
+
+def search_doctors(request):
+    department_name = request.GET.get('department', '')
+    doctor_name = request.GET.get('doctor', '')
+
+    doctors = Doctor.objects.all()
+
+    if department_name:
+        doctors = doctors.filter(specialization__title__icontains=department_name)
+
+    if doctor_name:
+        doctors = doctors.filter(
+            Q(user__first_name__icontains=doctor_name) | Q(user__last_name__icontains=doctor_name)
+        )
+
+
+    results = doctors.values(
+        'id',
+        'user__first_name',
+        'user__last_name',
+        'profile_picture',
+    )
+
+    for result in results:
+        result['profile_picture'] = request.build_absolute_uri(settings.MEDIA_URL + result['profile_picture'])
+
+    return JsonResponse(list(results), safe=False)
+
+
+class WorkingDayViewSet(viewsets.ModelViewSet):
+    queryset = WorkingDay.objects.all() 
+    serializer_class = WorkingDaySerializer
