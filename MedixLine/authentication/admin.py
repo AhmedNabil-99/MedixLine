@@ -1,11 +1,5 @@
 from django.contrib import admin
-from chats.models import Chat
+from .models import User
 # Register your models here.
 
-
-class ChatAdmin(admin.ModelAdmin):
-    list_display = ['is_read']
-    list_filter = ['sender', 'reciever', 'message' ,'is_read']
-
-
-admin.site.register(Chat , ChatAdmin)
+admin.site.register(User)  

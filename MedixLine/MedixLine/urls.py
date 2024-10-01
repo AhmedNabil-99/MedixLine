@@ -16,7 +16,6 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from authentication.views import UserLoginView, UserLogoutView
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -28,4 +27,5 @@ urlpatterns = [
     path('api/doctor/', include('doctors.urls')),
     path('api/auth/', include('authentication.urls')),
     path('api/appointment/', include('appointments.urls')),
+    path('api/chat/', include('chats.urls')),
     ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
