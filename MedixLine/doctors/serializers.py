@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Doctor, Specialization, WorkingDay
+from .models import Doctor, Specialization, WorkingDay,Rating,Comment
 from authentication.models import User
 from authentication.serializers import UserSerializer
 
@@ -35,7 +35,19 @@ class SpecializationSerializer(serializers.ModelSerializer):
         model = Specialization
         fields = '__all__'
 
+class RatingSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Rating
+        fields = '__all__'
+
+    
 class WorkingDaySerializer(serializers.ModelSerializer):
     class Meta:
         model = WorkingDay
+        fields = '__all__'
+
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model= Comment
         fields = '__all__'

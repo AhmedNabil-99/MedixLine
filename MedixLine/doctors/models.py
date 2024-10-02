@@ -1,5 +1,6 @@
 from django.db import models
 from authentication.models import User
+from patients.models import Patient
 import base64
 
 from django.core.validators import RegexValidator,FileExtensionValidator
@@ -33,6 +34,8 @@ class WorkingDay(models.Model):
         return self.day.capitalize()
 
 class Doctor(models.Model):
+    average_rating = models.DecimalField(max_digits=3, decimal_places=2, default=0.00)
+
     phone_number_validator = RegexValidator(
         regex=r'^(010|011|015|012)\d{8}$',
         message="Not A Valid Phone Number."
@@ -98,7 +101,36 @@ class Doctor(models.Model):
 
     def __str__(self):
         return f"{self.user.username}"
+        
+    def update_average_rating(self):
+        avg_rating = self.ratings.aggregate(Avg('value'))['value__avg']
+        if avg_rating is not None:
+            self.average_rating = avg_rating
+        else:
+            self.average_rating = 0.00
+        self.save()
 
+class Rating(models.Model):
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name='ratings')
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+    value = models.PositiveIntegerField(choices=[(i, i) for i in range(1, 6)]) 
 
+    class Meta:
+        unique_together = ('doctor', 'patient')
+
+    def __str__(self):
+        return f'{self.value} stars for {self.doctor.user.first_name}'
+
+class Comment(models.Model):
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name='comments')
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('doctor', 'patient')
+
+    def __str__(self):
+        return f'{self.value} stars for {self.doctor.user.first_name}'
     
 

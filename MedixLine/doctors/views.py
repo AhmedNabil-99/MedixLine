@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status,permissions
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin
 from rest_framework.authtoken.views import ObtainAuthToken
@@ -12,13 +13,16 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.urls import reverse
 from django.contrib.auth.models import User
-
+from .models import Doctor, Specialization,Rating,Comment
+from .serializers import DoctorSerializer, SpecializationSerializer, DoctorSerializerSet,RatingSerializer,CommentSerializer
 from .models import Doctor, Specialization, WorkingDay
 from .serializers import DoctorSerializer, SpecializationSerializer, DoctorSerializerSet, WorkingDaySerializer
 from authentication.models import User
 from django.http import JsonResponse
 from django.db.models import Q
 from django.conf import settings
+from django.db.models import Avg
+
 
 
 
@@ -74,6 +78,53 @@ class SpecializationViewSet(viewsets.ModelViewSet):
     queryset = Specialization.objects.all() 
     serializer_class = SpecializationSerializer
 
+
+class RatingViewSet(viewsets.ModelViewSet):
+    queryset = Rating.objects.all()
+    serializer_class = RatingSerializer
+    # permission_classes = [IsAuthenticated]
+
+    def create(self, request, *args, **kwargs):
+        print("Request method:", request.method)
+        if request.user.role != 'patient':
+            return Response({"detail": "Only patients can create ratings."}, status=status.HTTP_403_FORBIDDEN)
+
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            rating_instance = serializer.save() 
+            self.update_average_rating(rating_instance.doctor)  
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def retrieve(self, request, *args, **kwargs):
+        rating = self.get_object()  
+        serializer = self.get_serializer(rating)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def update(self, request, *args, **kwargs):
+        rating = self.get_object() 
+        if request.user.role != 'patient':
+            return Response({"detail": "Only patients can update ratings."}, status=status.HTTP_403_FORBIDDEN)
+
+        serializer = self.get_serializer(rating, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()  
+            self.update_average_rating(rating.doctor) 
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        
+        print("Serializer errors:", serializer.errors)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def update_average_rating(self, doctor):
+        avg_rating = doctor.ratings.aggregate(Avg('value'))['value__avg']
+        doctor.average_rating = avg_rating if avg_rating is not None else 0.00
+        doctor.save()
+        
 def search_doctors(request):
     department_name = request.GET.get('department', '')
     doctor_name = request.GET.get('doctor', '')
@@ -105,3 +156,34 @@ def search_doctors(request):
 class WorkingDayViewSet(viewsets.ModelViewSet):
     queryset = WorkingDay.objects.all() 
     serializer_class = WorkingDaySerializer
+
+class CommentViewSet(viewsets.ModelViewSet):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+    # permission_classes = [IsAuthenticated]
+
+    def create(self, request, *args, **kwargs):
+        if request.user.role != 'patient':
+            return Response({"detail": "Only patients can create comments."}, status=status.HTTP_403_FORBIDDEN)
+        doctor_id = request.data.get('doctor')
+        patient_id = request.user.id 
+        
+        if Comment.objects.filter(doctor_id=doctor_id, patient_id=patient_id).exists():
+            return Response({"detail": "You can only comment once on this doctor."}, status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def retrieve(self, request, *args, **kwargs):
+        comment = self.get_object()
+        serializer = self.get_serializer(comment)
+        return Response(serializer.data, status=status.HTTP_200_OK)
