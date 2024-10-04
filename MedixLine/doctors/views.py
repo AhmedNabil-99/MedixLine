@@ -145,6 +145,9 @@ def search_doctors(request):
         'user__first_name',
         'user__last_name',
         'profile_picture',
+        'address',
+        'price',
+        'is_confirmed',
     )
 
     for result in results:
