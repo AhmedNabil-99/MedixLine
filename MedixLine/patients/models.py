@@ -22,10 +22,11 @@ class Patient(models.Model):
     phone_number = models.CharField(
         max_length=11,
         validators=[phone_number_validator],
-        unique=True
+        unique=True,
+        null=True,
+        blank=True
     )    
-    # email = models.EmailField(unique=True)
-    address = models.TextField()
+    address = models.TextField(null=True, blank=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="patient_account")
 
     def __str__(self):

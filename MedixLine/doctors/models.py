@@ -48,7 +48,7 @@ class Doctor(models.Model):
 
     gender = models.CharField(max_length=10, choices=gender_choices)
 
-    address = models.TextField()
+    address = models.TextField(null=True, blank=True)
 
     
     description = models.TextField(
@@ -58,7 +58,9 @@ class Doctor(models.Model):
     phone_number = models.CharField(
             max_length=11,
             validators=[phone_number_validator],
-            unique=True
+            unique=True,
+            null=True,
+            blank=True
         )        
     profile_picture = models.ImageField(
         upload_to="doctors/images/profile_pic", 
@@ -80,7 +82,7 @@ class Doctor(models.Model):
     )
     specialization = models.ForeignKey(Specialization, on_delete=models.CASCADE, null=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="doctor_account")
-    working_days = models.ManyToManyField(WorkingDay, related_name="doctor_working_days", null=True, blank=True)
+    working_days = models.ManyToManyField(WorkingDay, related_name="doctor_working_days", blank=True)
     start_time = models.TimeField(
         null=True,
         blank=True

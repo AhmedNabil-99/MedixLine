@@ -139,18 +139,24 @@ def search_doctors(request):
             Q(user__first_name__icontains=doctor_name) | Q(user__last_name__icontains=doctor_name)
         )
 
+    results = []
+    for doctor in doctors:
+        working_days_list = list(doctor.working_days.values_list('id', flat=True))  # Convert working days to list
+        result = {
+            'id': doctor.id,
+            'user__first_name': doctor.user.first_name,
+            'user__last_name': doctor.user.last_name,
+            'profile_picture': request.build_absolute_uri(settings.MEDIA_URL + doctor.profile_picture.name),
+            'address': doctor.address,
+            'price': doctor.price,
+            'is_confirmed': doctor.is_confirmed,
+            'working_days': working_days_list,  # Return working_days as a list of strings
+            'average_rating': doctor.average_rating,
+        }
+        results.append(result)
 
-    results = doctors.values(
-        'id',
-        'user__first_name',
-        'user__last_name',
-        'profile_picture',
-    )
+    return JsonResponse(results, safe=False)
 
-    for result in results:
-        result['profile_picture'] = request.build_absolute_uri(settings.MEDIA_URL + result['profile_picture'])
-
-    return JsonResponse(list(results), safe=False)
 
 
 class WorkingDayViewSet(viewsets.ModelViewSet):
