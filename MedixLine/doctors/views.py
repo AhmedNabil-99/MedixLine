@@ -60,7 +60,7 @@ def activate(request, uidb64):
 
 
 class DoctorViewSet(viewsets.ModelViewSet):
-    queryset = Doctor.objects.all()
+    queryset = Doctor.objects.all().filter(is_confirmed=True)
     serializer_class = DoctorSerializerSet
 
 class DoctorRegistrationView(APIView):

@@ -2,7 +2,7 @@ from django.db import models
 from authentication.models import User
 from patients.models import Patient
 import base64
-
+from django.utils import timezone
 from django.core.validators import RegexValidator,FileExtensionValidator
 from django.core.exceptions import ValidationError
 
@@ -33,9 +33,18 @@ class WorkingDay(models.Model):
     def __str__(self):
         return self.day.capitalize()
 
+
+def validate_date_of_birth(date):
+    if date and date > timezone.now().date():
+            raise ValidationError("not a valid date of birth")
+
 class Doctor(models.Model):
     average_rating = models.DecimalField(max_digits=3, decimal_places=2, default=0.00)
 
+    date_of_birth = models.DateField(
+            validators=[validate_date_of_birth]
+        )
+    
     phone_number_validator = RegexValidator(
         regex=r'^(010|011|015|012)\d{8}$',
         message="Not A Valid Phone Number."
@@ -65,7 +74,7 @@ class Doctor(models.Model):
     profile_picture = models.ImageField(
         upload_to="doctors/images/profile_pic", 
         null=False, 
-        validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png'])]
+        validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png'])],
     )
     national_id = models.ImageField(
         upload_to="doctors/images/national_ids",

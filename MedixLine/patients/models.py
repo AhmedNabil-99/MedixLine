@@ -4,21 +4,20 @@ from django.core.validators import RegexValidator, EmailValidator
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 
+def validate_date_of_birth(date):
+    if date and date > timezone.now().date():
+            raise ValidationError("not a valid date of birth")
+
 class Patient(models.Model):
-    # other fields related to student ...
-    # first_name = models.CharField(max_length=50)
-    # last_name = models.CharField(max_length=50)
-    date_of_birth = models.DateField()
-    gender_choices = [
-        ('male', 'Male'),
-        ('female', 'Female'),
-        ('other', 'Other'),
-    ]  
+    date_of_birth = models.DateField(
+        validators=[validate_date_of_birth]
+    )
+
     phone_number_validator = RegexValidator(
         regex=r'^(010|011|015|012)\d{8}$',
-        message="Not A Valid Phone Number."
+        message="Please enter a valid egyptian phone number."
     )
-    gender = models.CharField(max_length=10, choices=gender_choices)
+    gender = models.CharField(max_length=10)
     phone_number = models.CharField(
         max_length=11,
         validators=[phone_number_validator],
@@ -31,9 +30,4 @@ class Patient(models.Model):
 
     def __str__(self):
         return f"{self.user.username}"
-
-    def clean(self):
-        super().clean()
-        if self.date_of_birth and self.date_of_birth > timezone.now().date():
-            raise ValidationError("Not A Valid Date of Birth")
     
