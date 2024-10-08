@@ -4,7 +4,7 @@ from .models import Appointment
 class AppointmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Appointment
-        fields = ['id', 'date', 'time', 'patient', 'doctor']
+        fields = ['id', 'date', 'time', 'patient', 'doctor','status']
 
     def create(self, validated_data):
         validated_data['status'] = 'pending'
