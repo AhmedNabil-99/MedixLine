@@ -107,14 +107,14 @@ WSGI_APPLICATION = 'MedixLine.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('DB_NAME', 'medixline'),  # Default name, change as needed
-        'USER': os.environ.get('DB_USER', 'medixline'),  # Default user, change as needed
-        'PASSWORD': os.environ.get('DB_PASSWORD', 'medixline'),  # Default password
-        'HOST': os.environ.get('DB_HOST', 'localhost'),  # Default host
-        'PORT': os.environ.get('DB_PORT', '5432'),  # Default port
+        'ENGINE': 'django.db.backends.sqlite3',  # Use SQLite by default
+        'NAME': BASE_DIR / 'db.sqlite3',         # SQLite database file
     }
 }
+
+# If in production (Heroku), override the database settings with PostgreSQL
+if os.environ.get('ENV') == 'production':
+    DATABASES['default'] = dj_database_url.config(conn_max_age=600, conn_health_checks=True)
 
 
 # Password validation
