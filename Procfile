@@ -1,1 +1,1 @@
-web: gunicorn MedixLine.wsgi.py --log-file -
+web: gunicorn MedixLine.MedixLine.wsgi.py --log-file -
