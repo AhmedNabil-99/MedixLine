@@ -38,7 +38,9 @@ class GetMessages(generics.ListAPIView):
         messages = Chat.objects.filter(
           sender__in=[sender_id, reciever_id],
           reciever__in=[sender_id, reciever_id]
-        )  
+        )
+
+        messages.filter(reciever=self.request.user, is_read=False).update(is_read=True)
 
         return messages
     

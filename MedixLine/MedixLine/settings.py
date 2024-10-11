@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-97dj2=%18s&hk*uyc)%@jt$68_980$$3k3@6d7$yb=nw-#puqs
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -76,6 +76,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'MedixLine.urls'
@@ -156,4 +157,9 @@ MEDIA_ROOT=os.path.join(BASE_DIR, 'media/')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+import dj_database_url
 
+DATABASES['default'] = dj_database_url.config(
+    conn_max_age=600,
+    conn_health_checks=True,
+)
