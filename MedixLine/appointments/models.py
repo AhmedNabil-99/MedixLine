@@ -3,6 +3,8 @@ from doctors.models import Doctor
 from patients.models import Patient
 from django.core.exceptions import ValidationError
 from django.utils import timezone
+
+
 class Appointment(models.Model):
     STATUS_CHOICES = [
         ('pending', 'Pending'),

@@ -52,11 +52,11 @@ def activate(request, uidb64):
         user.is_active = True 
         user.save()
         messages.success(request, 'Account activated successfully! You can now log in.')
-        return redirect('http://localhost:3000/signin') 
+        return redirect('https://medixline-0b0c74d92d9a.herokuapp.com/signin') 
     except User.DoesNotExist:
         print(request)
         messages.error(request, 'Invalid activation link')
-        return redirect('http://localhost:3000/signup')
+        return redirect('https://medixline-0b0c74d92d9a.herokuapp.com/signup')
 
 
 class DoctorViewSet(viewsets.ModelViewSet):
@@ -146,7 +146,7 @@ def search_doctors(request):
             'id': doctor.id,
             'user__first_name': doctor.user.first_name,
             'user__last_name': doctor.user.last_name,
-            'profile_picture': request.build_absolute_uri(settings.MEDIA_URL + doctor.profile_picture.name),
+            'profile_picture': doctor.profile_picture.url,
             'address': doctor.address,
             'price': doctor.price,
             'is_confirmed': doctor.is_confirmed,

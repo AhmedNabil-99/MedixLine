@@ -47,10 +47,10 @@ def activate(request, uidb64):
         user.is_active = True 
         user.save()
         messages.success(request, 'Account activated successfully! You can now log in.')
-        return redirect('http://localhost:3000/signin') 
+        return redirect('https://medixline-0b0c74d92d9a.herokuapp.com/signin') 
     except User.DoesNotExist:
         messages.error(request, 'Invalid activation link')
-        return redirect('http://localhost:3000/signup')
+        return redirect('https://medixline-0b0c74d92d9a.herokuapp.com/signup')
 
 
 
